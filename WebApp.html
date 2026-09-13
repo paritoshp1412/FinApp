@@ -918,14 +918,14 @@ function renderCapQueue(){
     const q=CAP_QUEUE.find(x=>x.id===id);
     if(!q)return;
     const msg=q.action==="delete"?"Cancel this pending deletion and restore the transaction to view?":
-               q.action==="update"?"Stop trying to sync this edit? (Your local change stays, it just won't be written to the file.)":
+               q.action==="update"?"Revert this edit back to what was last imported? (Undoes your change, doesn't just stop syncing it.)":
                "Remove this from the queue? (It will also disappear from your dashboard, since it was never in the workbook.)";
     if(!confirm(msg))return;
     if(q.action==="delete"){
       S.txns.push({...q.snapshot,_row:q.row});
     }else if(q.action==="update"){
       const ti=S.txns.findIndex(t=>t.capId===id);
-      if(ti>=0)delete S.txns[ti].capId;
+      if(ti>=0){if(q.original)S.txns[ti]={...q.original,_row:q.row};else delete S.txns[ti].capId;}
     }else{
       const ti=S.txns.findIndex(t=>t.capId===id);
       if(ti>=0)S.txns.splice(ti,1);
@@ -1090,7 +1090,8 @@ function capQueueUpsertForTxn(prevX,newX){
     return prevX.capId;
   }else if(prevX._row){
     const id=capUid();
-    CAP_QUEUE.push({id,action:"update",row:prevX._row,createdAt:new Date().toISOString(),date:newX.date,kind:newX.kind,from:newX.from,to:newX.to,amt:newX.amt,cat:newX.cat,sub:newX.sub,com:newX.com});
+    const original={date:prevX.date,kind:prevX.kind,from:prevX.from,to:prevX.to,amt:prevX.amt,cat:prevX.cat,sub:prevX.sub,com:prevX.com};
+    CAP_QUEUE.push({id,action:"update",row:prevX._row,original,createdAt:new Date().toISOString(),date:newX.date,kind:newX.kind,from:newX.from,to:newX.to,amt:newX.amt,cat:newX.cat,sub:newX.sub,com:newX.com});
     capPersistQueue();
     return id;
   }else{
