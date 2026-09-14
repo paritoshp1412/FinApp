@@ -1,6 +1,6 @@
-const CACHE = "ledger-app-v2";
+const CACHE = "ledger-app-v3";
 const ASSETS = [
-  "./FinanceApp.html",
+  "./mobile.html",
   "./manifest.json",
   "./icon-192.png",
   "./icon-512.png",

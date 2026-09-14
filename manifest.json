@@ -2,7 +2,7 @@
   "name": "Ledger — personal finance, run like a firm",
   "short_name": "Ledger",
   "description": "Personal finance dashboard, ledger, and mobile quick-entry — all in one file, all local to this device.",
-  "start_url": "./FinanceApp.html",
+  "start_url": "./mobile.html",
   "scope": "./",
   "display": "standalone",
   "background_color": "#0a0a0b",
